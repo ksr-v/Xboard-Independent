@@ -6,6 +6,19 @@ Status: VERIFIED (native Ubuntu deployment)
 
 The native validation VM was deleted by the user on 2026-09-10 after the deployment, expansion, and functional checks were completed. No project VM is currently active. A future aaPanel verification requires a new dedicated clean VM; do not reuse this status as evidence that aaPanel has passed.
 
+## 2026-09-11 aaPanel Verification Attempt
+
+A dedicated clean Ubuntu 22.04.5 Hyper-V VM was prepared for aaPanel verification at `172.19.73.87`:
+
+- 2 vCPU and 3.8 GiB RAM were verified after the user corrected the VM memory allocation.
+- The 30 GB disk was expanded to a 28 GB root filesystem with approximately 21 GB free.
+- The static IP configuration was normalized by removing the conflicting cloud-init DHCP netplan file.
+- No Nginx, MariaDB, Redis, Docker or other panel service was present before testing.
+
+The official aaPanel installer was attempted twice. The first attempt timed out while downloading the installer; the second download succeeded and returned a 90,940-byte script, but the installer then remained alive for approximately five minutes without creating `/www/server/panel`, starting a panel service, or opening its advertised port (`25628`). The process was stopped and the VM was confirmed clean afterward.
+
+Current classification: `DISCOVERED` failure, not a successful aaPanel deployment. GitHub and aaPanel endpoints both returned HTTP 200 during the network comparison, so the second attempt's failure was not explained by general outbound connectivity.
+
 ## 2026-09-10 Clean VM Native Deployment
 
 Verified on a new Ubuntu 22.04.5 LTS Hyper-V VM; its current DHCP address is `172.19.68.133`:
@@ -28,19 +41,6 @@ The project was tested on a second dedicated Ubuntu VM using three deployment ap
 - aaPanel installation completed and its `BT-Panel` and `BT-Task` services were running.
 
 ## aaPanel Access Blocker
-
-## 2026-09-11 aaPanel Dedicated VM Verification
-
-A new dedicated Ubuntu 22.04.5 Hyper-V VM was prepared for the required aaPanel verification:
-
-- SSH user: `codex`, passwordless sudo confirmed.
-- Resources: 2 vCPU, 3.8 GiB RAM, 30 GB disk; the root LVM filesystem was expanded to 28 GB with approximately 21 GB free.
-- The VM was clean before the test; Nginx, PHP, MariaDB, Redis and Docker were inactive.
-- The aaPanel installer script downloaded successfully from the official URL.
-
-Result: `NOT VERIFIED`. The official installer started but repeatedly stalled during initialization with only the banner in the log. No aaPanel panel port was opened, no `BT-Panel` service appeared, and the process had to be stopped. A direct HEAD request to the official site and installer returned HTTP 200, so the final blocker was not a simple DNS or download failure.
-
-The VM was left without aaPanel services after the failed attempts. Do not classify aaPanel as supported until a future test completes the panel login, Nginx/PHP/MariaDB/Redis installation, Xboard deployment, and HTTP functional checks.
 
 Verified during the test:
 

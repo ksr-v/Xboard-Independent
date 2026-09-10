@@ -1,14 +1,13 @@
 # Private Changelog
 
+## 2026-09-11
+
+- Prepared a dedicated aaPanel verification VM with 2 vCPU, 3.8 GiB RAM, a 28 GB root filesystem, and static IP `172.19.73.87`.
+- Attempted the official aaPanel installer twice; the first download timed out and the second downloaded successfully but stalled without creating panel files or services. Stopped the process and confirmed no aaPanel residue remained.
+
 ## 2026-09-10
 
 - User deleted the native validation VM; current environment has no active project VM. Resume only after a new dedicated VM is provided, with aaPanel verification still pending.
-
-## 2026-09-11
-
-- Prepared a dedicated clean Ubuntu 22.04.5 VM for the required aaPanel verification and expanded its LVM root filesystem to 28 GB.
-- Confirmed passwordless sudo and official aaPanel installer download, but three installer attempts stalled before any panel port or `BT-Panel` service appeared. Stopped and cleaned the failed installer; aaPanel remains unverified.
-
 - Rebuilt deployment on a clean Ubuntu 22.04.5 LTS Hyper-V VM after deleting the two contaminated test VMs.
 - Verified native Xboard deployment end to end: PHP 8.2, MariaDB 10.6, Redis, Composer, Nginx, PHP-FPM, HTTP 200 for the home/admin paths, queue worker, scheduler, and UFW.
 - Tightened the deployed source tree to read-only runtime permissions, restricted `.env` to `640`, and left only `storage` and `bootstrap/cache` writable by `www-data`.
