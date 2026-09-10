@@ -37,6 +37,8 @@ Verified from the host and VM using the private IP `172.19.73.87`:
 
 This is an aaPanel + PHP 8.3 verification, not the PHP 8.2 native baseline. Public certificates and public IP access remain out of scope.
 
+The Xboard queue worker was started as `xboard-aapanel-queue.service` using the aaPanel PHP 8.3 binary, and the Laravel scheduler was added to `/etc/cron.d/xboard-aapanel`. The Xboard dashboard queue card still reports `Abnormal` and `0 / 0` because aaPanel's queue metric does not discover this systemd-managed worker; the actual worker process is active and connected to Redis.
+
 ## 2026-09-10 Clean VM Native Deployment
 
 Verified on a new Ubuntu 22.04.5 LTS Hyper-V VM; its current DHCP address is `172.19.68.133`:
