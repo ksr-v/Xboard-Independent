@@ -21,6 +21,22 @@ Current classification: `DISCOVERED` failure, not a successful aaPanel deploymen
 
 The interactive retry later completed the aaPanel installation and created the panel service, internal web server, Unix socket, and port `37090`. However, both the public security path and direct local requests returned HTTP 404. The aaPanel error log also recorded a Flask `TypeError` for the login view during an earlier `HEAD` request. The official repair command reported that version `3.1` was already current, but the login path remained 404 after repair. Therefore aaPanel installation is present, but aaPanel login verification failed and Xboard deployment was not started on this VM.
 
+## 2026-09-11 aaPanel Login and Xboard Verification
+
+The aaPanel security path was successfully opened from the Hyper-V host browser after accepting the self-signed certificate. The aaPanel software center was usable. The default software queue installed Nginx 1.30.4, PHP 8.3.33, MariaDB, OpenLiteSpeed, Pure-FTPd and phpMyAdmin; Redis 7.2 was then installed separately.
+
+Xboard was initialized under `/www/wwwroot/xboard` using the aaPanel PHP 8.3 runtime. The PHP Redis extension was compiled and enabled specifically for `/www/server/php/83`. The aaPanel-managed Nginx vhost was corrected to remove the default stopped-site vhost and serve `/www/wwwroot/xboard/public` through `/tmp/php-cgi-83.sock`.
+
+Verified from the host and VM using the private IP `172.19.73.87`:
+
+- Xboard home page: HTTP 200.
+- Xboard administrator path: HTTP 200.
+- MariaDB: listening on port 3306.
+- Redis: listening on loopback port 6379.
+- PHP 8.3 CLI and phpredis: loaded.
+
+This is an aaPanel + PHP 8.3 verification, not the PHP 8.2 native baseline. Public certificates and public IP access remain out of scope.
+
 ## 2026-09-10 Clean VM Native Deployment
 
 Verified on a new Ubuntu 22.04.5 LTS Hyper-V VM; its current DHCP address is `172.19.68.133`:
