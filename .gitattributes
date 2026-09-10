@@ -1,0 +1,12 @@
+# Preserve large recovery artifacts through Git LFS.
+private-assets/xboard/composer/bin/composer.phar filter=lfs diff=lfs merge=lfs -text
+private-assets/xboard-node/geo-data/* filter=lfs diff=lfs merge=lfs -text
+private-assets/xboard-node/releases/xbctl-linux-* filter=lfs diff=lfs merge=lfs -text
+private-assets/xboard-node/releases/xboard-node-linux-* filter=lfs diff=lfs merge=lfs -text
+
+# Keep shell scripts deployable on Linux.
+*.sh text eol=lf
+
+# Keep project documentation portable.
+*.md text eol=lf
+*.txt text eol=lf

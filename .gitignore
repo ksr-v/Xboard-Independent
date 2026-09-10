@@ -1,0 +1,21 @@
+# Nested source working trees and local bare repositories have their own Git history.
+/source/
+/private-repos/
+
+# Secrets and operational data must not enter the management repository.
+/private-config/
+/database-backups/
+/private-assets/backups/
+**/.env
+**/.env.*
+!**/.env.example
+*.sql
+*.sql.gz
+
+# Local runtime and editor artifacts.
+*.log
+*.tmp
+Thumbs.db
+.DS_Store
+.idea/
+.vscode/
