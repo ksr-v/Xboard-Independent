@@ -31,7 +31,55 @@
 
 同一台服务器不要同时安装 aaPanel 和另一套面板管理的 Nginx。80 端口只能由预期的 Web 服务管理。
 
+### 本项目已验证基线
+
+本教程来自一次真实的 Ubuntu 22.04.5 Hyper-V 验证部署，已验证的运行基线如下：
+
+- PHP 8.2.33、Composer 2.10.3
+- MariaDB 10.6.23、Redis 6
+- Ubuntu Nginx 1.18、PHP-FPM
+- 2 vCPU、约 3.8 GiB 内存、48 GB 根文件系统
+- 首页和管理员入口均返回 HTTP 200
+- Nginx、PHP-FPM、MariaDB、Redis、队列 Worker 和 cron 均为 active
+
+版本可能随软件源更新而变化；安装后请保留实际版本输出，便于下次恢复时复现。
+
+### 请先保存关键参数
+
+开始安装前，请把下面的参数保存到密码管理器或加密笔记中，不要只留在终端历史里：
+
+| 参数 | 示例 | 是否敏感 |
+| --- | --- | --- |
+| 服务器 IP | `172.19.68.133` | 否 |
+| SSH 用户 | `code` | 否 |
+| SSH 私钥位置 | 本机 `.ssh` 密钥路径 | 是 |
+| 应用目录 | `/var/www/xboard` | 否 |
+| 数据库名 | `xboard` | 否 |
+| 数据库用户 | `xboard` | 否 |
+| 数据库密码 | 自行生成的长随机密码 | 是 |
+| Redis 密码 | 空或自行设置 | 是 |
+| 管理员邮箱 | 自行指定 | 是 |
+| 管理员路径 | 安装命令输出的随机路径 | 是 |
+| Xboard 源码提交 | Git commit 或归档 SHA-256 | 否 |
+
+管理员初始密码、数据库密码、`.env` 和数据库 dump 不要提交到 GitHub。安装结束后先修改管理员密码，再把版本、路径和备份位置补充到私有记录。
+
 ## 快速安装
+
+### 自动化方式
+
+仓库提供了与本教程对应的自动化脚本：
+
+```bash
+cd /tmp
+curl -fsSLO https://raw.githubusercontent.com/ksr-v/Xboard-Independent/main/Xboard/docs/en/installation/ubuntu-native-install.sh
+chmod 700 ubuntu-native-install.sh
+sudo ./ubuntu-native-install.sh
+```
+
+脚本会安装系统依赖、创建数据库、准备 `.env`、执行 Xboard 初始化、配置 Nginx、建立队列 Worker 和定时任务，并在结束时输出需要保存的关键参数。执行前请打开脚本确认源码来源和本机策略；脚本不会替你保存管理员密码，也不会上传备份。
+
+如果服务器不能访问 GitHub，请下载脚本后通过受控的私有渠道传输，并先验证脚本校验和。
 
 ### 1. 安装系统组件
 
