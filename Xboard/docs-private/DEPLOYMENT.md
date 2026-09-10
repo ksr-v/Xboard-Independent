@@ -19,6 +19,8 @@ The official aaPanel installer was attempted twice. The first attempt timed out 
 
 Current classification: `DISCOVERED` failure, not a successful aaPanel deployment. GitHub and aaPanel endpoints both returned HTTP 200 during the network comparison, so the second attempt's failure was not explained by general outbound connectivity.
 
+The interactive retry later completed the aaPanel installation and created the panel service, internal web server, Unix socket, and port `37090`. However, both the public security path and direct local requests returned HTTP 404. The aaPanel error log also recorded a Flask `TypeError` for the login view during an earlier `HEAD` request. The official repair command reported that version `3.1` was already current, but the login path remained 404 after repair. Therefore aaPanel installation is present, but aaPanel login verification failed and Xboard deployment was not started on this VM.
+
 ## 2026-09-10 Clean VM Native Deployment
 
 Verified on a new Ubuntu 22.04.5 LTS Hyper-V VM; its current DHCP address is `172.19.68.133`:

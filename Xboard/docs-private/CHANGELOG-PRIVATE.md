@@ -4,6 +4,7 @@
 
 - Prepared a dedicated aaPanel verification VM with 2 vCPU, 3.8 GiB RAM, a 28 GB root filesystem, and static IP `172.19.73.87`.
 - Attempted the official aaPanel installer twice; the first download timed out and the second downloaded successfully but stalled without creating panel files or services. Stopped the process and confirmed no aaPanel residue remained.
+- Resumed aaPanel installation with explicit `y` input after identifying the interactive `/www` confirmation prompt. Installation completed with panel port `37090`, but the security path returned HTTP 404 locally and externally. The aaPanel repair command reported version `3.1` current; login verification remains failed and Xboard installation was not attempted.
 
 ## 2026-09-10
 
