@@ -2,6 +2,10 @@
 
 Status: VERIFIED (native Ubuntu deployment)
 
+## Current VM Status
+
+The native validation VM was deleted by the user on 2026-09-10 after the deployment, expansion, and functional checks were completed. No project VM is currently active. A future aaPanel verification requires a new dedicated clean VM; do not reuse this status as evidence that aaPanel has passed.
+
 ## 2026-09-10 Clean VM Native Deployment
 
 Verified on a new Ubuntu 22.04.5 LTS Hyper-V VM; its current DHCP address is `172.19.68.133`:

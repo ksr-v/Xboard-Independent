@@ -2,6 +2,7 @@
 
 ## 2026-09-10
 
+- User deleted the native validation VM; current environment has no active project VM. Resume only after a new dedicated VM is provided, with aaPanel verification still pending.
 - Rebuilt deployment on a clean Ubuntu 22.04.5 LTS Hyper-V VM after deleting the two contaminated test VMs.
 - Verified native Xboard deployment end to end: PHP 8.2, MariaDB 10.6, Redis, Composer, Nginx, PHP-FPM, HTTP 200 for the home/admin paths, queue worker, scheduler, and UFW.
 - Tightened the deployed source tree to read-only runtime permissions, restricted `.env` to `640`, and left only `storage` and `bootstrap/cache` writable by `www-data`.

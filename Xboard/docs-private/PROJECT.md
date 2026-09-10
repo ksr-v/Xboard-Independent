@@ -53,4 +53,4 @@ This repository must remain recoverable even when the upstream GitHub project, r
 
 ## Current Phase
 
-Native IP-based deployment, core functional verification, and local recovery export are complete on the clean validation VM. The project is handoff-ready for validation/light testing. Domain, HTTPS, and public production rollout are intentionally out of scope. The separate clean-room restore rehearsal is deferred by user request and must be raised as a pending item before the overall project is declared fully complete.
+Native IP-based deployment, core functional verification, and local recovery export were completed on the validation VM, which has now been deleted by the user. There are currently no active project VMs. The project is paused at the handoff/recovery stage until a new VM is provided. Domain, HTTPS, and public production rollout are intentionally out of scope. The separate clean-room restore rehearsal is deferred by user request and must be raised as a pending item before the overall project is declared fully complete.
