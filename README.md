@@ -46,7 +46,8 @@ PHP-FPM：/run/php/php8.2-fpm.sock
 
 部署指南：
 
-- [Ubuntu 原生部署记录](Xboard/docs-private/DEPLOYMENT.md) - 已验证的 PHP 8.2、MariaDB、Redis、Nginx 和 PHP-FPM 路线
+- [Ubuntu 原生安装教程](Xboard/docs/en/installation/ubuntu-native.md) - 可执行的 PHP 8.2、MariaDB、Redis、Nginx 和 PHP-FPM 安装步骤
+- [Ubuntu 原生部署记录](Xboard/docs-private/DEPLOYMENT.md) - 当前验证机的实际部署结果和状态
 - [生产部署规划](Project-Docs/PRODUCTION-DEPLOYMENT-PLAN.md) - 生产环境的资源、安全和发布边界
 - [Docker 部署规划](Project-Docs/IMAGE-RECOVERY-PLAN.md) - Docker 镜像、Compose 和离线恢复资料
 - [Xboard-Node 部署记录](Xboard-Node/docs-private/DEPLOYMENT.md) - 节点端部署边界和待验证事项
