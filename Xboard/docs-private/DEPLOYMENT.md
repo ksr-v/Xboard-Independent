@@ -29,6 +29,19 @@ The project was tested on a second dedicated Ubuntu VM using three deployment ap
 
 ## aaPanel Access Blocker
 
+## 2026-09-11 aaPanel Dedicated VM Verification
+
+A new dedicated Ubuntu 22.04.5 Hyper-V VM was prepared for the required aaPanel verification:
+
+- SSH user: `codex`, passwordless sudo confirmed.
+- Resources: 2 vCPU, 3.8 GiB RAM, 30 GB disk; the root LVM filesystem was expanded to 28 GB with approximately 21 GB free.
+- The VM was clean before the test; Nginx, PHP, MariaDB, Redis and Docker were inactive.
+- The aaPanel installer script downloaded successfully from the official URL.
+
+Result: `NOT VERIFIED`. The official installer started but repeatedly stalled during initialization with only the banner in the log. No aaPanel panel port was opened, no `BT-Panel` service appeared, and the process had to be stopped. A direct HEAD request to the official site and installer returned HTTP 200, so the final blocker was not a simple DNS or download failure.
+
+The VM was left without aaPanel services after the failed attempts. Do not classify aaPanel as supported until a future test completes the panel login, Nginx/PHP/MariaDB/Redis installation, Xboard deployment, and HTTP functional checks.
+
 Verified during the test:
 
 - aaPanel was listening on TCP port `25953`.
