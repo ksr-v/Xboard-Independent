@@ -258,7 +258,15 @@ export XBOARD_NON_INTERACTIVE=1
 sh init.sh
 ```
 
-如果不设置 `XBOARD_DB_PASSWORD`，`init.sh` 会像官方安装流程一样在终端隐藏式询问数据库密码。密码不能为空；脚本会在初始化前执行 `php artisan optimize:clear`，避免旧的 Laravel 配置缓存继续使用空密码。
+如果不设置数据库参数，`init.sh` 会在终端交互询问：
+
+```text
+Database name [xboard]:
+Database user [输入的数据库名]:
+Database password for 输入的数据库用户:
+```
+
+数据库名直接回车默认使用 `xboard`，数据库用户直接回车默认使用数据库名；数据库密码使用隐藏输入且不能为空。脚本会在初始化前执行 `php artisan optimize:clear`，避免旧的 Laravel 配置缓存继续使用空密码。
 
 也可以显式指定 PHP：
 
