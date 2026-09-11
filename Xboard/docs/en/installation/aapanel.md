@@ -222,6 +222,50 @@ aaPanel 安装 MariaDB 后，Ubuntu 默认的 `sudo mariadb` socket 认证可能
 
 ## 部署 Xboard
 
+### 0. 一键安装入口
+
+源码目录中的 `init.sh` 已支持官方教程式的一键安装，同时兼容源码归档部署。重新打包自定义源码后，使用归档中的脚本：
+
+```bash
+cd /www/wwwroot/xboard
+sh init.sh
+```
+
+归档校验和建议在上传前保存：
+
+```powershell
+Get-FileHash .\xboard-custom-test.tar.gz -Algorithm SHA256
+```
+
+脚本会自动：
+
+- 选择 aaPanel PHP 8.3、PHP 8.2 或系统 PHP
+- 安装 Composer 依赖
+- 如果是 Git 工作树且管理端资源缺失，更新 Git submodule
+- 如果归档已经包含 `public/assets/admin/index.html`，跳过 submodule
+- 创建 `.env` 并生成应用密钥
+- 执行 Xboard 初始化
+- 建立 storage 链接并缓存 Laravel 配置
+- 输出需要保存的管理员路径和初始密码
+
+源码归档没有 `.git` 时，不能直接依赖 `git submodule update`；本项目的脚本会根据管理端资源是否存在自动选择路径。当前归档内已经包含 `public/assets/admin/index.html`，因此会跳过 submodule 更新。
+
+如果需要完全非交互运行，请先设置数据库密码：
+
+```bash
+export XBOARD_DB_PASSWORD='替换为数据库密码'
+export XBOARD_NON_INTERACTIVE=1
+sh init.sh
+```
+
+也可以显式指定 PHP：
+
+```bash
+XBOARD_PHP_BIN=/www/server/php/83/bin/php sh init.sh
+```
+
+一键脚本不会自动创建 MariaDB 数据库用户，不会配置 aaPanel 网站 vhost，也不会替你保存管理员密码。运行前必须先完成本教程中的数据库和网站准备步骤。
+
 ### 1. 上传源码
 
 在本地准备官方源码或经过审核的私有归档，然后上传到：
