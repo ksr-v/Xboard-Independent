@@ -12,9 +12,9 @@ Project-wide operating rules are maintained in `PROJECT-INSTRUCTIONS.md`.
 
 ## Overall Status
 
-- Last updated: 2026-09-10
-- Overall state: DISCOVERED
-- Current milestone: Phase 0 - deployment evidence capture and dependency hardening
+- Last updated: 2026-09-11
+- Overall state: VERIFIED (native and aaPanel IP validation)
+- Current milestone: Handoff and migration packaging
 
 ## Verified Baseline
 
@@ -31,9 +31,9 @@ Project-wide operating rules are maintained in `PROJECT-INSTRUCTIONS.md`.
 
 ### Xboard
 
-- State: DISCOVERED
-- Current focus: Safe non-interactive installation and deployment evidence capture
-- Blockers: The non-interactive MySQL/Redis connection paths still require an isolated Linux integration test; the aaPanel management endpoint returns HTTP 404 despite its services and port being active.
+- State: VERIFIED (native and aaPanel IP validation)
+- Current focus: Handoff and migration packaging
+- Blockers: Clean-room recovery rehearsal is deferred; Xboard-Node live node integration is not complete; ordinary-user and some aaPanel backend page checks were intentionally skipped.
 - Repository details: `../Xboard/docs-private/`
 
 ### Xboard-Node
@@ -54,9 +54,8 @@ Project-wide operating rules are maintained in `PROJECT-INSTRUCTIONS.md`.
 
 - Docker Compose and native Ubuntu deployment approaches were exercised on a second dedicated VM.
 - Docker was subsequently cleaned from that VM.
-- aaPanel installed successfully; `BT-Panel` and `BT-Task` were running, TCP port `25953` was listening, and UFW allowed the port.
-- The aaPanel root and authentication paths returned HTTP 404. Current evidence favors an aaPanel package or web-routing compatibility issue over an Xboard deployment conflict, but detailed logs and version data are still required before this can be marked `VERIFIED`.
-- No further deployment should be performed until the aaPanel failure evidence is captured and reviewed.
+- aaPanel was installed on a dedicated private-IP VM; the host browser login succeeded, the aaPanel software stack was installed, and Xboard home/admin paths returned HTTP 200 through the aaPanel-managed web server.
+- The aaPanel validation used PHP 8.3, MariaDB, Redis, phpredis, a systemd queue worker and cron scheduler. Public certificates were intentionally not tested.
 
 ## Verified Critical Findings
 
