@@ -39,6 +39,15 @@ This is an aaPanel + PHP 8.3 verification, not the PHP 8.2 native baseline. Publ
 
 The Xboard queue worker was started as `xboard-aapanel-queue.service` using the aaPanel PHP 8.3 binary, and the Laravel scheduler was added to `/etc/cron.d/xboard-aapanel`. The Xboard dashboard queue card still reports `Abnormal` and `0 / 0` because aaPanel's queue metric does not discover this systemd-managed worker; the actual worker process is active and connected to Redis.
 
+Final aaPanel runtime status verified after the user chose to skip the node, user, and plan page checks:
+
+- aaPanel `BT-Panel` and `BT-Task` processes are running.
+- PHP-FPM 8.3, MariaDB, Redis, and OpenLiteSpeed processes are running.
+- MariaDB responds through `/tmp/mysql.sock`; Redis responds with `PONG`.
+- aaPanel/Nginx/WebServer ports and Xboard port 80 are listening.
+- Xboard home and administrator paths both return HTTP 200 using the private IP.
+- Ordinary-user login and dashboard node/user/plan page verification were intentionally skipped.
+
 ## 2026-09-10 Clean VM Native Deployment
 
 Verified on a new Ubuntu 22.04.5 LTS Hyper-V VM; its current DHCP address is `172.19.68.133`:
