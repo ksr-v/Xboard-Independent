@@ -11,6 +11,7 @@
 !**/.env.example
 *.sql
 *.sql.gz
+xboard-custom-test.tar.gz
 
 # Local runtime and editor artifacts.
 *.log
