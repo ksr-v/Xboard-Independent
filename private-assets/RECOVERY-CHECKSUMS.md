@@ -4,7 +4,7 @@ Status: VERIFIED
 
 This file is the version and integrity log for the private recovery assets created to replace critical upstream-only dependencies.
 
-The machine-readable SHA256 manifest for every currently stored recovery file is `RECOVERY-SHA256SUMS.txt`. Hashes were recalculated locally on 2026-09-10.
+The machine-readable SHA256 manifest for every currently stored recovery file is `RECOVERY-SHA256SUMS.txt`. The Node installer checksum was refreshed on 2026-10-05 after removing its upstream download default; all manifest entries are verified against their files.
 
 ## Xboard
 
@@ -28,6 +28,12 @@ The machine-readable SHA256 manifest for every currently stored recovery file is
 - Source: `source/Xboard-Node/install.sh`
 - Notes: Use this file as the local replacement when the upstream raw GitHub installer is unavailable.
 
+### Go Vendor Archive
+
+- Path: `private-assets/xboard-node/go-vendor-fea5732.zip`
+- SHA256: `904779a08edefd57b24fa66e303f1134fad2e65e8d20dd5f333db22eb7749a3a`
+- Use: extract as `vendor/` and build with `go build -mod=vendor`
+
 ### Geo Data
 
 - Path: `private-assets/xboard-node/geo-data`
@@ -40,6 +46,13 @@ The machine-readable SHA256 manifest for every currently stored recovery file is
 - Version: `v1.13`, matching baseline commit `0a29338e1f102a462363ce3527417029f89bab28`
 - Contents: `xboard-node` and `xbctl` binaries for Linux amd64 and arm64, plus `README.txt`
 - Verification: All four binary SHA256 values match the digests published in the GitHub v1.13 release metadata.
+
+### Independent xbctl Rebuild
+
+- Path: `private-assets/xboard-node/orphan-builds/2026-10-05/`
+- Version: `v1.13-orphan.1`
+- Contents: Linux amd64 and arm64 xbctl binaries plus build provenance.
+- Build used the local Go module cache with `GOPROXY=off` and `GOSUMDB=off`; original release artifacts were not overwritten.
 
 ## Recovery Use
 

@@ -4,10 +4,11 @@ Status: VERIFIED
 
 ## Project Identity
 
-- Upstream official repo: https://github.com/cedar2025/Xboard
+- Historical source repo (provenance only; no longer synchronized): https://github.com/cedar2025/Xboard
 - Local baseline mirror: D:\Xboard-Independent\private-repos\Xboard.git
 - Verified baseline tag: baseline-2026-09-09
 - Verified commit: 4f48e61a2cbc6db5338872b6bdb45ef954ec1256
+- Active source checkout no longer has a cedar2025 remote. Local bare origin and the user's separate private remote are retained.
 
 ## Private Recovery Objective
 
@@ -53,4 +54,4 @@ This repository must remain recoverable even when the upstream GitHub project, r
 
 ## Current Phase
 
-Native IP-based deployment, core functional verification, local recovery export, and a dedicated aaPanel + PHP 8.3 IP validation were completed. There are currently no active project VMs. The project is paused at the handoff/migration stage. Domain, HTTPS, and public production rollout are intentionally out of scope. The separate clean-room restore rehearsal is deferred by user request and must be raised as a pending item before the overall project is declared fully complete.
+The user chose independent orphan maintenance on 2026-10-05. Preserve upstream history and licenses, but do not synchronize from the historical source. The admin frontend is being vendored as ordinary files instead of a Git submodule. Native/aaPanel deployment is the required recovery target; Docker, public domain/HTTPS rollout, client traffic test, and clean-room recovery rehearsal are outside the currently authorized scope.

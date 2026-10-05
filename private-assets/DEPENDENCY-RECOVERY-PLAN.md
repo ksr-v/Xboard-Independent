@@ -1,10 +1,18 @@
 # Dependency Recovery Plan
 
-Status: PLANNED
+Status: PARTIALLY VERIFIED (asset existence and checksums; offline recovery path pending)
+
+## Verified Asset Snapshot (2026-10-05)
+
+- Both private bare Git mirrors contain their expected baseline tags.
+- The Xboard admin submodule worktree commit is `ef5f43da335092cbff8fdf0ad7ff9b4d92d7d0d7`; a local admin dist file copy is present.
+- The Composer PHAR, Xboard-Node installer, four preserved v1.13 Linux release binaries, two independent v1.13-orphan.1 xbctl rebuilds, and four geo-data files are present in the documented private asset paths.
+- All 26 files listed in `RECOVERY-SHA256SUMS.txt` exist and match their SHA-256 values.
+- These checks establish stored-asset integrity only. No offline build or upstream-independent restore was performed.
 
 ## Objective
 
-This document defines the first-pass private recovery plan for the critical upstream dependencies that would break Xboard and Xboard-Node if the original GitHub, GHCR, or raw GitHub resources disappear.
+This document defines the first-pass private recovery plan for the dependencies that would break the prioritized Native/aaPanel path if required upstream resources disappear. Docker/Compose and GHCR are outside the current required recovery scope.
 
 ## Xboard Critical Assets
 
@@ -26,14 +34,11 @@ This document defines the first-pass private recovery plan for the critical upst
   - Preserve the exact commit used by the baseline
   - Update local scripts to prefer private path if upstream is unavailable
 
-### 3. Xboard Docker image and Compose assets
+### 3. Xboard Docker image and Compose assets (optional path)
 
 - Source discovered from: compose YAML files and GHCR references
-- Risk: container image is hosted in GHCR and not guaranteed to remain available
-- Recovery plan:
-  - Preserve container images locally as tarballs or OCI archives
-  - Store local compose override files in the private backup set
-  - Record image tags and digests used in the stable deployment
+  - Risk: container image is hosted in GHCR and not guaranteed to remain available
+  - Current decision: Docker/Compose is not a required recovery target; Native/aaPanel takes priority.
 
 ## Xboard-Node Critical Assets
 
@@ -70,9 +75,20 @@ This document defines the first-pass private recovery plan for the critical upst
 4. Create a private installer path and local override files
 5. Verify recovery on a clean environment before relying on the setup in production
 
+## Known Gaps
+
+- Xboard `init.sh` self-updates Composer from the network; the existing `composer.lock` was previously reported out of sync with `composer.json`. The deployed-app archive contains a complete vendor tree, but clean-source offline installation has not been demonstrated.
+- Xboard `update.sh` now fetches the private remote and fast-forwards only, preserving the Composer lockfile. The deployed archive still has no `.git`, so built-in updating is not enabled there.
+- Xboard-Node's installer is pinned to v1.13 and uses local binaries by default; no download source is contacted unless a private `--download-base` is explicitly provided.
+- `xbctl upgrade` also requires a private download base; the default no longer resolves to an upstream release host.
+- Geo-data is requested conditionally when geo route rules are configured. Local copies are stored, but runtime fallback to those copies has not been established.
+- No Go module cache bundle was identified; this matters only if fully offline Go builds are required.
+- Xboard's Node install command uses short-lived signed panel URLs. The installer, v1.13 node binaries, and v1.13-orphan.1 xbctl binaries are staged on machine1; hashes match local copies, and the signed installer download was verified. The installer itself was not run.
+- The Xboard updater supports either a private Git fast-forward or a source-archive overlay. The archive updater validates the manifest, checksum, protected paths, and unchanged Composer manifests. Machine1's loopback endpoint and updater client are deployed; release `20261005-403604e` is applied and the authenticated updater reports current/latest equal. The token is kept only in the protected server `.env`. A rollback rehearsal remains outstanding; a root-only source backup is retained on machine1.
+
 ## Verification Labels
 
-- VERIFIED: baseline source and local mirror
+- VERIFIED: baseline source, local mirrors, stored recovery files, and matching checksums
 - DISCOVERED: critical dependencies identified
-- PLANNED: local artifact locations defined
-- UNKNOWN: final runtime validation and exact replacement packaging still pending
+- PLANNED: wire stored assets into version-pinned, offline-capable recovery paths
+- UNKNOWN: Composer lock repair compatibility and final offline restore behavior

@@ -21,3 +21,8 @@ Thumbs.db
 .DS_Store
 .idea/
 .vscode/
+
+# Large or private binaries stay local.
+/private-assets/xboard-node/go-vendor-*.zip
+/private-assets/xboard-node/orphan-builds/
+/private-assets/xboard/releases/

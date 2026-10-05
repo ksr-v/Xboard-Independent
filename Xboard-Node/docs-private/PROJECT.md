@@ -4,10 +4,11 @@ Status: VERIFIED
 
 ## Project Identity
 
-- Upstream official repo: https://github.com/cedar2025/Xboard-Node
+- Historical source repo (provenance only; no longer synchronized): https://github.com/cedar2025/Xboard-Node
 - Local baseline mirror: D:\Xboard-Independent\private-repos\Xboard-Node.git
 - Verified baseline tag: baseline-2026-09-09
 - Verified commit: 0a29338e1f102a462363ce3527417029f89bab28
+- Active source checkout no longer has a cedar2025 remote; the local bare origin is retained.
 
 ## Private Recovery Objective
 
@@ -15,17 +16,14 @@ This repository must remain recoverable even when the upstream GitHub repo, rele
 
 ## Critical Upstream Dependencies
 
-### UPSTREAM_CRITICAL
+### UPSTREAM_CRITICAL (resolved by orphaning)
 
-- GitHub source repo for Xboard-Node
-- GitHub release assets under xboard-node/releases
-- Raw GitHub install script at raw.githubusercontent.com/cedar2025/xboard-node/dev/install.sh
-- GHCR image refs in workflows and docs
-- Geo-data downloads used during runtime setup
+- Historical source repo, release assets, raw installer and GHCR refs: removed as defaults; replaced by the private repo (https://github.com/ksr-v/Xboard-Node--Custom-Source, branch dev), local binaries and an explicit private download base.
+- Geo-data: local fallback (fea5732) plus private copies in private-assets/xboard-node/geo-data.
 
 ### PUBLIC_INFRASTRUCTURE
 
-- Go module dependencies from go.mod and go.sum
+- Go module dependencies from go.mod and go.sum (offline vendor archive in private-assets/xboard-node/go-vendor-fea5732.zip)
 - DNS and certificate ecosystem providers used by cert automation
 
 ### OPTIONAL_EXTERNAL
@@ -51,4 +49,4 @@ This repository must remain recoverable even when the upstream GitHub repo, rele
 
 ## Current Phase
 
-This repository is moving from baseline verification into private dependency recovery design.
+The user chose independent orphan maintenance on 2026-10-05. Preserve upstream history and licenses, but do not synchronize from the historical source. Replace upstream release/install/runtime links with version-pinned private or local assets as each path is addressed. Native/aaPanel is the required recovery target; Docker is optional and client traffic testing remains intentionally skipped.

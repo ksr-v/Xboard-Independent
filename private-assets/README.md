@@ -7,9 +7,12 @@ This directory stores locally controlled copies and replacement artifacts for th
 - xboard/composer/bin: local Composer PHAR and related installation assets
 - xboard/submodule/admin-dist: local replacement for the upstream admin UI submodule
 - xboard-node/releases: local release binaries and package artifacts
+- xboard/releases: versioned Xboard source overlays and the current latest.json manifest for machine1
 - xboard-node/installers: local installer script copies and replacement scripts
 - xboard-node/geo-data: cached runtime data for geo IP/site downloads
 
 ## Ownership Rule
 
 Only place files here that are verified to be required for recovery, and only after checking the exact upstream origin and version.
+
+Xboard overlays are built from a clean committed HEAD with `source/Xboard/scripts/build-private-release.sh`. The builder creates `latest.json` and `releases/<version>/xboard.tar.gz`; verify them against `RECOVERY-SHA256SUMS.txt` before transfer.

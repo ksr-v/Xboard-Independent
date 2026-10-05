@@ -1,5 +1,9 @@
 # Private Changelog
 
+## 2026-10-05
+
+- Recorded the user's planned VMware recovery snapshot for `machine1` (`<panel-host>`) at the verified aaPanel + Xboard deployment checkpoint. Snapshot creation and its exact VMware label are pending confirmation; suggested label: `xboard-aapanel-verified-2026-10-05`.
+
 ## 2026-09-11
 
 - Prepared a dedicated aaPanel verification VM with 2 vCPU, 3.8 GiB RAM, a 28 GB root filesystem, and static IP `172.19.73.87`.

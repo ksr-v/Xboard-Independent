@@ -1,10 +1,10 @@
 # Image and Container Recovery Plan
 
-Status: PLANNED
+Status: OUT OF REQUIRED SCOPE (user decision, 2026-10-05)
 
 ## Objective
 
-This document defines how Xboard and Xboard-Node should be recovered when the upstream GHCR images, Container Registry resources, or Docker Compose references are no longer available.
+Docker/Compose and GHCR recovery are not required for the current project target. The user selected Native/aaPanel recovery and independent orphan maintenance. This file is retained as historical planning context only; do not treat its image-archive actions as active work.
 
 ## Critical Findings
 
