@@ -6,7 +6,7 @@
 
 ## 2026-09-11
 
-- Prepared a dedicated aaPanel verification VM with 2 vCPU, 3.8 GiB RAM, a 28 GB root filesystem, and static IP `172.19.73.87`.
+- Prepared a dedicated aaPanel verification VM with 2 vCPU, 3.8 GiB RAM, a 28 GB root filesystem, and static IP `<vm-ip>`.
 - Attempted the official aaPanel installer twice; the first download timed out and the second downloaded successfully but stalled without creating panel files or services. Stopped the process and confirmed no aaPanel residue remained.
 - Resumed aaPanel installation with explicit `y` input after identifying the interactive `/www` confirmation prompt. Installation completed with panel port `37090`, but the security path returned HTTP 404 locally and externally. The aaPanel repair command reported version `3.1` current; login verification remains failed and Xboard installation was not attempted.
 - Confirmed aaPanel login from the Hyper-V host browser, installed the aaPanel software stack, enabled phpredis for aaPanel PHP 8.3, deployed Xboard under `/www/wwwroot/xboard`, and verified home/admin HTTP 200 through the aaPanel-managed Nginx vhost.
@@ -22,7 +22,7 @@
 - Created and SHA-256 verified a root-only local VM backup containing the Xboard database dump, application archive, `.env`, and checksum manifest.
 - Downloaded the verified backup into `private-assets/backups/xboard-current/`; local archive listing, SQL header, and SHA-256 checks passed. Added a Git ignore rule for the backup directory.
 - Deferred the clean-room recovery rehearsal at the user's request; this must be raised as a pending reminder before the project is declared fully complete.
-- Expanded the VM to approximately 3.8 GiB RAM and a 48 GB root filesystem with approximately 40 GB free; updated Xboard and Nginx to the new DHCP address `172.19.68.133`.
+- Expanded the VM to approximately 3.8 GiB RAM and a 48 GB root filesystem with approximately 40 GB free; updated Xboard and Nginx to the new DHCP address `<vm-ip>`.
 - Reviewed the existing deployment work without performing a new deployment.
 - Recorded the second-VM Docker Compose, native Ubuntu, and aaPanel test state.
 - Classified the aaPanel HTTP 404 as an unresolved panel routing/package compatibility issue rather than a verified Xboard conflict.

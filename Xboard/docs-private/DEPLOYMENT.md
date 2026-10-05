@@ -8,7 +8,7 @@ The native validation VM was deleted by the user on 2026-09-10 after the deploym
 
 ## 2026-09-11 aaPanel Verification Attempt
 
-A dedicated clean Ubuntu 22.04.5 Hyper-V VM was prepared for aaPanel verification at `172.19.73.87`:
+A dedicated clean Ubuntu 22.04.5 Hyper-V VM was prepared for aaPanel verification at `<vm-ip>`:
 
 - 2 vCPU and 3.8 GiB RAM were verified after the user corrected the VM memory allocation.
 - The 30 GB disk was expanded to a 28 GB root filesystem with approximately 21 GB free.
@@ -27,7 +27,7 @@ The aaPanel security path was successfully opened from the Hyper-V host browser 
 
 Xboard was initialized under `/www/wwwroot/xboard` using the aaPanel PHP 8.3 runtime. The PHP Redis extension was compiled and enabled specifically for `/www/server/php/83`. The aaPanel-managed Nginx vhost was corrected to remove the default stopped-site vhost and serve `/www/wwwroot/xboard/public` through `/tmp/php-cgi-83.sock`.
 
-Verified from the host and VM using the private IP `172.19.73.87`:
+Verified from the host and VM using the private IP `<vm-ip>`:
 
 - Xboard home page: HTTP 200.
 - Xboard administrator path: HTTP 200.
@@ -136,7 +136,7 @@ During aaPanel installation pip reported a `pyOpenSSL`/`cryptography` version co
 
 ## 2026-09-10 Clean VM Native Deployment
 
-Verified on a new Ubuntu 22.04.5 LTS Hyper-V VM; its current DHCP address is `172.19.68.133`:
+Verified on a new Ubuntu 22.04.5 LTS Hyper-V VM; its current DHCP address is `<vm-ip>`:
 
 - PHP 8.2.33, PHP-FPM, Composer 2.10.3, MariaDB 10.6.23, Redis 6, and Ubuntu Nginx 1.18 are active.
 - Xboard is installed at `/var/www/xboard` with MariaDB, Redis cache/session/queue, and production debug disabled.
