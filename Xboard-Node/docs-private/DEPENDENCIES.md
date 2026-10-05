@@ -16,7 +16,7 @@ This file documents verified external dependencies for the `Xboard-Node` reposit
 ## PUBLIC_INFRASTRUCTURE
 
 - `go.mod` and `go.sum`
-  - Versioned Go module dependencies and checksums. They are public infrastructure, and an archived vendor bundle exists at `private-assets/xboard-node/go-vendor-fea5732.zip`; unzip it as `vendor/` in the source tree and build with `go build -mod=vendor`.
+  - Versioned Go module dependencies and checksums. They are public infrastructure, and an archived vendor bundle is stored locally at `private-assets/xboard-node/go-vendor-fea5732.zip` (not in Git) and as a private GitHub Release attachment (https://github.com/ksr-v/Xboard-Node--Custom-Source/releases/tag/go-vendor-fea5732); unzip it as `vendor/` in the source tree and build with `go build -mod=vendor`.
 - Public DNS and TLS providers used by cert automation
   - These are ecosystem dependencies, not a private fork target.
 
