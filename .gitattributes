@@ -10,3 +10,5 @@ private-assets/xboard-node/releases/xboard-node-linux-* filter=lfs diff=lfs merg
 # Keep project documentation portable.
 *.md text eol=lf
 *.txt text eol=lf
+
+node-installer/** -text
