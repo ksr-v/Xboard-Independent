@@ -1,6 +1,6 @@
 # Xboard aaPanel 部署教程
 
-本教程用于在干净的 Ubuntu 22.04 LTS 内网服务器上，通过 aaPanel 软件中心部署 Xboard。教程结构参考官方 aaPanel 安装指南，但命令、目录和验证步骤结合本项目实际测试结果整理。
+本教程用于在干净的 Ubuntu 24.04 LTS 内网服务器上，通过 aaPanel 软件中心部署独立维护的 Xboard。当前验证环境为 Ubuntu 24.04.3、aaPanel 8.0.6、Nginx 1.30.5、PHP 8.3.33、MariaDB 10.11.10 和 Redis 7.0.15。
 
 本教程默认使用内网 IP，不验证公网 IP 证书、域名、DNS 或 443 公网访问。
 
@@ -23,19 +23,22 @@
 - 内存：至少 2 GB，推荐 4 GB
 - 磁盘：至少 30 GB，推荐 40 GB
 - Swap：建议 2 GB
-- 静态内网 IP：示例为 `172.19.73.87`
+- 静态内网 IP：使用自己的内网地址，例如 `192.168.1.10`
 
 ### 系统
 
-- Ubuntu 22.04.5 LTS
+- Ubuntu 24.04 LTS（在 24.04.3 上验证）
 - SSH 用户具备免密 sudo
 - 干净系统，不预装 Nginx、Apache、PHP、MariaDB、Redis、Docker 或其他面板
-- 80、37090 等需要的内网端口可访问
+- 80、aaPanel 实际配置的面板端口及 SSH 端口可访问
 
 ### 重要边界
 
 - aaPanel 会接管 Web 服务、PHP、数据库和软件安装任务，不要在同一台机器上混装另一套面板。
 - 本教程使用 aaPanel PHP 8.3 作为实际验证版本。Xboard native 路线使用 PHP 8.2，两条路线不要混淆。
+- Xboard 源码必须从本项目私有发布资产取得；不要从 cedar2025 仓库、release 或 raw 安装脚本下载。
+- 本教程的源码归档不含 `vendor`。`init.sh` 会运行 Composer `self-update` 和 `composer install`，需要访问 Composer/Packagist 公共基础设施；干净环境离线安装尚未验证。
+- 私有归档更新端点只接受部署该端点的服务器本机 loopback 请求。外部测试服务器可以用私有源码归档安装，但不能用 `127.0.0.1` 指向其他主机；只有在目标机也部署了受保护的更新端点后，才启用 archive 更新模式。
 - 本教程不验证公网证书。内网访问通常使用 aaPanel 自签名证书，浏览器需要手动接受证书警告。
 - 安装完成后请保存面板地址、面板安全入口、面板用户名、面板密码、数据库 root 密码和 Xboard 管理员信息。
 
@@ -119,11 +122,12 @@ https://服务器IP:37090/安全入口
 
 登录 aaPanel 后打开软件商店，按顺序安装：
 
-- Nginx 1.30 或兼容版本
-- PHP 8.3
-- MariaDB 10.11 或兼容版本
-- Redis 7.2
+- Nginx 1.30.5 或兼容版本
+- PHP 8.3.33
+- MariaDB 10.11.10
 - phpMyAdmin 可选
+
+本项目验证环境使用 Ubuntu Redis 7.0.15，而不是 aaPanel 软件商店中的 Redis。新环境可使用 aaPanel Redis 或系统 Redis 7.x，但建议只绑定 loopback，并确认 PHP CLI 与 FPM 都启用匹配的 phpredis 扩展。
 
 本项目实际验证中，aaPanel 软件队列需要通过“消息盒子”查看。如果任务全部显示 `waiting`，点击 aaPanel 的 `Restart` 让任务队列开始执行。
 
@@ -193,7 +197,7 @@ aPanel → Website → Add site
 
 填写：
 
-- Domain：内网 IP，例如 `172.19.73.87`
+- Domain：内网 IP，例如 `192.168.1.10`
 - Root directory：`/www/wwwroot/xboard/public`
 - PHP version：PHP 8.3
 - Database：可先不自动创建，后续手动创建更容易核对权限
@@ -222,92 +226,76 @@ aaPanel 安装 MariaDB 后，Ubuntu 默认的 `sudo mariadb` socket 认证可能
 
 ## 部署 Xboard
 
-### 0. 一键安装入口
+### 0. 获取并校验私有源码归档
 
-源码目录中的 `init.sh` 已支持官方教程式的一键安装，同时兼容源码归档部署。重新打包自定义源码后，使用归档中的脚本：
-
-```bash
-cd /www/wwwroot/xboard
-sh init.sh
-```
-
-归档校验和建议在上传前保存：
+在受信任的 Windows 工作站从项目私有恢复资产读取发布清单和对应归档。不要从历史上游仓库下载源码。以下示例会按 `latest.json` 选择当前发布，并在上传前检查大小和 SHA-256：
 
 ```powershell
-Get-FileHash .\xboard-custom-test.tar.gz -Algorithm SHA256
+$releaseRoot = 'C:\path\to\private-xboard-releases'
+$manifest = Get-Content (Join-Path $releaseRoot 'latest.json') -Raw | ConvertFrom-Json
+$archive = Join-Path (Join-Path (Join-Path $releaseRoot 'releases') $manifest.version) 'xboard.tar.gz'
+$actualHash = (Get-FileHash $archive -Algorithm SHA256).Hash.ToLower()
+$actualSize = (Get-Item $archive).Length
+if ($actualHash -ne $manifest.sha256 -or $actualSize -ne [int64]$manifest.size) {
+  throw 'Release archive failed manifest integrity validation.'
+}
+"Version=$($manifest.version) Size=$actualSize SHA256=$actualHash"
+scp $archive "codex@服务器IP:/tmp/xboard-source.tar.gz"
 ```
 
-脚本会自动：
+`latest.json` 指向当前发布；以后发布更新时应以清单中的版本和校验值为准。通过受保护的 SSH/SCP 通道传输；不要把 `.env`、token 或数据库密码放入归档或命令行。
 
-- 选择 aaPanel PHP 8.3、PHP 8.2 或系统 PHP
-- 安装 Composer 依赖
-- 如果是 Git 工作树且管理端资源缺失，更新 Git submodule
-- 如果归档已经包含 `public/assets/admin/index.html`，跳过 submodule
-- 创建 `.env` 并生成应用密钥
-- 执行 Xboard 初始化
-- 建立 storage 链接并缓存 Laravel 配置
-- 输出需要保存的管理员路径和初始密码
+### 1. 上传并解压
 
-源码归档没有 `.git` 时，不能直接依赖 `git submodule update`；本项目的脚本会根据管理端资源是否存在自动选择路径。当前归档内已经包含 `public/assets/admin/index.html`，因此会跳过 submodule 更新。
-
-如果需要完全非交互运行，请先设置数据库密码：
+确认 `/www/wwwroot/xboard` 是新建的空目录；不要将安装归档解压覆盖现有实例。先在 Windows 输出中记录 SHA-256，再在服务器核对：
 
 ```bash
-export XBOARD_DB_PASSWORD='替换为数据库密码'
-export XBOARD_NON_INTERACTIVE=1
-sh init.sh
-```
-
-如果不设置数据库参数，`init.sh` 会在终端交互询问：
-
-```text
-Database name [xboard]:
-Database user [输入的数据库名]:
-Database password for 输入的数据库用户:
-```
-
-数据库名直接回车默认使用 `xboard`，数据库用户直接回车默认使用数据库名；数据库密码使用隐藏输入且不能为空。脚本会在初始化前执行 `php artisan optimize:clear`，避免旧的 Laravel 配置缓存继续使用空密码。
-
-也可以显式指定 PHP：
-
-```bash
-XBOARD_PHP_BIN=/www/server/php/83/bin/php sh init.sh
-```
-
-一键脚本不会自动创建 MariaDB 数据库用户，不会配置 aaPanel 网站 vhost，也不会替你保存管理员密码。运行前必须先完成本教程中的数据库和网站准备步骤。
-
-### 1. 上传源码
-
-在本地准备官方源码或经过审核的私有归档，然后上传到：
-
-```text
-/www/wwwroot/xboard
-```
-
-示例：
-
-```bash
-cd /www/wwwroot
-sudo tar -xzf /path/to/xboard.tar.gz
+sha256sum /tmp/xboard-source.tar.gz
+tar -tzf /tmp/xboard-source.tar.gz | head
+sudo install -d -o www -g www -m 0755 /www/wwwroot/xboard
+sudo tar -xzf /tmp/xboard-source.tar.gz --no-same-owner -C /www/wwwroot/xboard
 sudo chown -R www:www /www/wwwroot/xboard
 ```
 
-### 2. 安装 Composer 依赖
+服务器上的哈希必须与工作站清单中的 `sha256` 完全一致。该源码 overlay 包含已 vendored 的 Admin 静态文件，但不含 `.git`、真实 `.env`、`storage`、`vendor` 或 `bootstrap/cache`；它不是完整应用/数据库备份。
 
-使用 aaPanel PHP 8.3：
+### 2. 运行一次初始化
+
+在数据库和 aaPanel 网站准备完成后，推荐使用归档自带的一键初始化脚本：
+
+```bash
+cd /www/wwwroot/xboard
+sudo -u www env XBOARD_PHP_BIN=/www/server/php/83/bin/php sh init.sh
+```
+
+脚本会安装 Composer 依赖、创建 `.env`/应用密钥、交互询问数据库信息并运行 `xboard:install`，随后建立 storage 链接并优化 Laravel 配置。它不会创建 MariaDB 数据库/用户，也不会配置 aaPanel vhost；这些必须先手动完成。数据库密码通过脚本的隐藏交互提示输入，不要把密码写在命令参数或 shell history 中。
+
+注意：`init.sh` 会运行 Composer `self-update --stable`，然后按 `composer.lock` 安装依赖；这需要访问 Composer/Packagist 公共基础设施。若外部测试机不能访问这些公共依赖，停止安装，不要声称该流程支持完全离线恢复。Composer lock 与 manifest 的兼容性问题仍在恢复清单中跟踪。
+
+一键初始化成功后，不要再重复执行下面手工初始化步骤中的 Composer 安装、`.env` 生成或 `xboard:install`。若要手工执行，按后续步骤逐项操作并跳过一键脚本。
+
+#### 更新器与 Node 安装资产
+
+归档更新端点只接受部署该端点的服务器本机 loopback 请求。若应用安装在另一台服务器，`http://127.0.0.1/private-xboard-updates` 会指向该服务器自身。只有在目标机也部署了归档端点和对应发布文件后，才在其受保护 `.env` 中设置 archive 更新模式、loopback URL、随机 token，以及与所装归档匹配的完整 `XBOARD_BUILD_COMMIT`。token 只在服务器本地生成/保存，不要放入命令行、Git 或聊天。
+
+归档包本身不包含 Node 二进制。若要在新 Xboard 实例中使用面板的一键 Node 安装命令，还需从受保护的私有恢复资产中单独取得 installer、目标 CPU 架构的 Node 二进制和独立维护版 `xbctl`，放入 `storage/app/private/node-installer` 并设置为 `www:www` 可读/可执行。未完成此步骤时，Xboard 核心面板仍可安装运行，但生成的机器安装命令不可用。
+
+### 3. 手工安装 Composer 依赖（仅手工流程）
+
+只有在没有运行 `init.sh` 时才执行。使用 aaPanel PHP 8.3：
 
 ```bash
 cd /www/wwwroot/xboard
 /www/server/php/83/bin/composer install --no-dev --prefer-dist --optimize-autoloader
 ```
 
-如果 Composer 不在 aaPanel PHP 目录，确认使用的是 Composer 2，并显式调用 PHP 8.3：
+如果 Composer 不在 aaPanel PHP 目录，确认使用 Composer 2，并显式调用 PHP 8.3：
 
 ```bash
 /www/server/php/83/bin/php /usr/local/bin/composer install --no-dev --prefer-dist --optimize-autoloader
 ```
 
-### 3. 配置 `.env`
+### 4. 配置 `.env`（仅手工流程）
 
 ```bash
 cd /www/wwwroot/xboard
@@ -335,7 +323,7 @@ QUEUE_CONNECTION=redis
 SESSION_DRIVER=redis
 ```
 
-### 4. 执行 Xboard 初始化
+### 5. 执行 Xboard 初始化（仅手工流程）
 
 ```bash
 /www/server/php/83/bin/php artisan xboard:install \
