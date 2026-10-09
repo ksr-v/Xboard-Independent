@@ -48,15 +48,19 @@ PHP-FPM：/run/php/php8.2-fpm.sock
 node_script=$(curl -fsS --max-time 30 --max-filesize 65536 https://raw.githubusercontent.com/ksr-v/Xboard-Independent/main/node-installer/install.sh) && [ -n "$node_script" ] && sudo bash -c "$node_script"
 ```
 
-- **1 安装 / 新增对接**：按提示选择 node/machine，填写面板地址、ID、Token、内核；Token 输入不回显，也无需写进命令或 Shell 历史。
-- **2 原地升级**：保留原配置、Token、绑定及健康检查端口，无需重绑或重装采集器。
-- **3 查看状态**；**0 退出**。
+- **1 安装**：填写 node/machine、面板地址、ID、Token、内核；检测到旧安装时，输入 `REPLACE` 确认替换本机全部旧对接，不再追加。旧配置、凭据和实例文件先备份，再停服切换。Token 输入不回显。
+- **2 卸载**：输入 `UNINSTALL` 确认，断开全部本机 Node 对接并卸载，保留恢复备份；**0 退出**。
+- 面板带参数的对接指令也显示此菜单，选择安装沿用已有参数；自动化须显式 `--yes`。
+
+安装后输入小写 **`node`**（大小写敏感）：**1 升级、2 重启节点、3 卸载、0 退出**。升级获取本项目维护脚本并使用其固定版本，保留当前配置、凭据、绑定及健康端口（包括 `0`）；非 root 会请求 sudo。已有 Node.js／其他程序的 `node` 命令时会拒绝安装／升级，不会覆盖或遮蔽它。
 
 自动识别 amd64/arm64，默认固定使用 [Node v1.13-orphan.2 Release](https://github.com/ksr-v/Xboard-Node--Custom-Source/releases/tag/v1.13-orphan.2)，不使用 latest 或本仓库中旧版二进制直链。支持本项目标准 Linux/systemd 安装，Docker、自定义服务或不完整安装不直接套用。
 
-命令先完整缓冲 HTTPS 脚本，下载失败或为空不执行；仅信任你认可的仓库，入口跟随 main 并以 root 执行。脚本沿用现有安装器的软件依赖安装流程。升级会重启 Node，可能中断连接；旧文件备份在 /etc/xboard-node/backups，失败尝试回滚。IPv4 自动展示还需启用 FlowScope 2.4.0，不依赖周期流量开关。
+命令先完整缓冲 HTTPS 脚本，下载失败或为空不执行；菜单通过独立终端读取，不能在无终端环境中直接交互。仅信任你认可的仓库，入口跟随 main 并以 root 执行。安装检测旧版后生成当前 `instances` 格式，仅保留此次目标；纯升级兼容但不重写旧配置，已有无效多实例布局应通过安装替换修复。安装、升级或重启可能中断连接；备份位于 `/etc/xboard-node/backups/recovery-*`（含敏感凭据），失败尝试恢复，恢复失败会明确报错。
 
-检查：`xboard-node -v`、`sudo systemctl status xboard-node --no-pager`。离线参数及验证边界见 [Node README](https://github.com/ksr-v/Xboard-Node--Custom-Source/blob/dev/README.md)。本次 16 项隔离 Bash 测试通过，未执行新版脚本真实 Linux 安装／升级；远程 Node CI 缺历史依赖快照的问题仍未修复。
+只停止 `xboard-node.service` 并释放其节点监听，不按端口强杀其他程序；不删除面板记录、历史流量、采集器或外部证书。卸载及 `--purge` 都保留恢复备份。自定义 unit、额外独立服务及管理目录外文件需人工处理。IPv4 自动展示还需启用 FlowScope 2.4.0，不依赖周期流量开关。
+
+检查：`xboard-node -v`、`sudo systemctl status xboard-node --no-pager`。离线参数和隔离回归测试入口见 [Node README](https://github.com/ksr-v/Xboard-Node--Custom-Source/blob/dev/README.md)。本次 48 项隔离回归中 47 通过、1 因 Windows 原生符号链接权限不足跳过；真实 Linux 安装／升级、端口释放及管道交互终端验收仍待执行。仅更新维护安装入口，不覆盖已有 v1.13-orphan.2 Release 资产；远程 Node CI 缺历史依赖快照的问题仍未修复。
 
 ## 文档导航
 
