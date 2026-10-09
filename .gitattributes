@@ -12,3 +12,4 @@ private-assets/xboard-node/releases/xboard-node-linux-* filter=lfs diff=lfs merg
 *.txt text eol=lf
 
 node-installer/** -text
+node-installer/*.sh text eol=lf
